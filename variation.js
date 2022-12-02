@@ -3,6 +3,7 @@ import { createReadStream, writeFileSync } from 'fs';
 import dotenv from "dotenv";
 
 dotenv.config();
+const readline = require("readline");
 
 const configuration = new Configuration({
     apiKey: process.env.HIDDEN_API_TOKEN,
@@ -26,4 +27,5 @@ console.log(url);
 const imgResult = await fetch(url);
 const blob = await imgResult.blob();
 const buffer = Buffer.from( await blob.arrayBuffer() )
+//TODO
 writeFileSync(`./img/${Date.now()}.png`, buffer);
