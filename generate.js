@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { writeFileSync } from 'fs';
 import dotenv from "dotenv";
+import Prompt from "@cloud-technology/cli-prompt";
 
 dotenv.config();
 
@@ -11,7 +12,9 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const prompt = 'realistic drawing of a cool cat with sunglasses playing the violin. '
+const prompt = await Prompt('Enter image prompt for Dall-E: ');
+//console.log(initialPrompt);
+//const prompt = initialPrompt
 //'The Giant by Francisco Goya except it is a giant gorilla'
 //'a very giant, muscular gorilla sitting with his legs over a cliff edge with his back turned to the viewer, on a foggy, dark day. Francisco Goya'
 
@@ -29,5 +32,7 @@ console.log(url);
 const imgResult = await fetch(url);
 const blob = await imgResult.blob();
 const buffer = Buffer.from( await blob.arrayBuffer() )
-writeFileSync(`./img/${Date.now()}.png`, buffer);
+const newFile = await Prompt("Enter New File Name +.png: ");
+console.log(newFile);
+writeFileSync(`./img/${newFile}`, buffer);
 

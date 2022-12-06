@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { createReadStream, writeFileSync } from 'fs';
 import dotenv from "dotenv";
+import Prompt from "@cloud-technology/cli-prompt";
 
 dotenv.config();
 
@@ -10,10 +11,15 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-//todo: create src variable that allows image name as input
-const src = './1669873829266.png'
-const mask = './mask.png'
-const replacePrompt = 'Baby Sun from the Teletubbies show shinning over a dark day'
+const src = await Prompt("Source File Name +.png: ");
+console.log("Source file: ", src);
+const mask = await Prompt("Mask File Name +.png: ");
+console.log("Mask file: ", mask);
+const replacePrompt = await Prompt('Enter replacement prompt: ');
+//console.log("Replacement prompt: ", replacePrompt);
+//const src = './1669873829266.png'
+//const mask = './mask.png'
+//const replacePrompt = 'giant atomic bomb muschroom cloud in the background'
 
 const result = await openai.createImageEdit(
     createReadStream(`./img/${src}`),
@@ -30,4 +36,6 @@ console.log(url);
 const imgResult = await fetch(url);
 const blob = await imgResult.blob();
 const buffer = Buffer.from( await blob.arrayBuffer() )
-writeFileSync(`./img/${Date.now()}.png`, buffer);
+const newFile = await Prompt("Enter New File Name +.png: ");
+console.log(newFile);
+writeFileSync(`./img/${newFile}`, buffer);

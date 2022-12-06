@@ -1,9 +1,10 @@
 import { Configuration, OpenAIApi } from 'openai';
 import { createReadStream, writeFileSync } from 'fs';
 import dotenv from "dotenv";
+import Prompt from "@cloud-technology/cli-prompt";
+
 
 dotenv.config();
-const readline = require("readline");
 
 const configuration = new Configuration({
     apiKey: process.env.HIDDEN_API_TOKEN,
@@ -11,11 +12,12 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-//todo: create src variable that allows image name as input
-const src = './coolCat.png'
+const sourceFile = await Prompt("Source File Name +.png: ");
+console.log(sourceFile);
+const src = `./img/${sourceFile}`
 
 const result = await openai.createImageVariation(
-    createReadStream(`./img/${src}`),
+    createReadStream(src),
     1,
     "1024x1024"
 );
@@ -27,5 +29,6 @@ console.log(url);
 const imgResult = await fetch(url);
 const blob = await imgResult.blob();
 const buffer = Buffer.from( await blob.arrayBuffer() )
-//TODO
-writeFileSync(`./img/${Date.now()}.png`, buffer);
+const newFile = await Prompt("Enter New File Name +.png: ");
+console.log(newFile);
+writeFileSync(`./img/${newFile}`, buffer);
